@@ -25,7 +25,7 @@ You will need to create the jar file in order to use the command line tool. cd t
 Usage
 -----
 
-java -jar saml-generator-1.0.jar [-domain <arg>] [-issuer <arg>] [-privateKey <arg>] [-publicKey <arg>] [-roles <arg>] [-email <arg>] [-samlAssertionExpirationDays <arg>] [-subject <arg>]
+java -jar saml-generator-1.1.jar [-domain <arg>] [-issuer <arg>] [-privateKey <arg>] [-publicKey <arg>] [-roles <arg>] [-email <arg>] [-samlAssertionExpirationDays <arg>] [-subject <arg>] [-postBack <arg>] [-entityId <arg>]
 
 ```
 -issuer
