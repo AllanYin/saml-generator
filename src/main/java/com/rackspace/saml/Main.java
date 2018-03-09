@@ -13,6 +13,7 @@ import org.apache.commons.cli.Options;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.impl.ResponseMarshaller;
+import org.opensaml.xml.util.Base64;
 import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
 
@@ -25,10 +26,14 @@ public class Main {
 			String subject = null;
 			String privateKey = null;
 			String publicKey = null;
+			String postBack = null;
+			String entityId = null;
 			Integer samlAssertionExpirationDays = null;
 			
 			Options options = new Options();
 			options.addOption("issuer", true, "Issuer for saml assertion");
+			options.addOption("postBack", true, "Post-back URL, also called Assertion Consumer Service URL");
+			options.addOption("entityId", true, "Entity ID of the Service Provider");
 			options.addOption("subject", true, "Subject of saml assertion");
             options.addOption("email", true, "Email associated with the subject");
             options.addOption("domain", true, "Domain attribute");
@@ -45,7 +50,9 @@ public class Main {
 				formatter.printHelp( "saml-util-1.0", options, true);
 				System.exit(1);
 			}
-		
+
+			postBack = cmd.getOptionValue("postBack");
+			entityId = cmd.getOptionValue("entityId");
 			issuer = cmd.getOptionValue("issuer");
 			subject = cmd.getOptionValue("subject");
 			privateKey = cmd.getOptionValue("privateKey");
@@ -66,7 +73,7 @@ public class Main {
 			producer.setPrivateKeyLocation(privateKey);
 			producer.setPublicKeyLocation(publicKey);
 			
-			Response responseInitial = producer.createSAMLResponse(subject, new DateTime(), "password", attributes, issuer, samlAssertionExpirationDays);
+			Response responseInitial = producer.createSAMLResponse(subject, new DateTime(), "password", attributes, issuer, samlAssertionExpirationDays, postBack, entityId);
 			
 			ResponseMarshaller marshaller = new ResponseMarshaller();
 			Element element = marshaller.marshall(responseInitial);
@@ -76,6 +83,9 @@ public class Main {
 			String responseStr = new String(baos.toByteArray());
 			
 			System.out.println(responseStr);
+
+			System.out.println("\nBase64Encoded: \n");
+			System.out.println(Base64.encodeBytes(responseStr.getBytes()));
 			
 		} catch (Throwable t) {
 			t.printStackTrace();
